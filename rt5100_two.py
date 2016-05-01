@@ -9,7 +9,7 @@ import time
 ser.Serial()
 
 ser.port='/dev/ttyUSB0'
-ser.baudrate = 24001  # Set baud rate
+ser.baudrate = 2400  # Set baud rate
 ser.bytesize=7
 ser.parity=serial.PARITY_EVEN
 ser.stopbits=serial.STOPBITS_TWO
