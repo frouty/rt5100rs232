@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import serial
- 
+
 port = "/dev/ttyUSB0"
 baud = 2400
-parity=serial.PARITY_EVEN
-bitlenght=serial.SEVENBITS
-stopbits=serial.STOPBITS_TWO
+parity = serial.PARITY_EVEN
+bitlenght = serial.SEVENBITS
+stopbits = serial.STOPBITS_TWO
 
- 
-ser = serial.Serial(port, 
-                            baudrate=baud,
-                            bytesize=bitlenght,
-                            parity=parity,
-                            stopbits=stopbits,
-                            timeout=1)
+
+ser = serial.Serial(port,
+                            baudrate = baud,
+                            bytesize = bitlenght,
+                            parity = parity,
+                            stopbits = stopbits,
+                            timeout = 1)
 
 # open the serial port
 if ser.isOpen():
@@ -30,7 +30,7 @@ while True:
         ser.close()
         exit()
     else:
-        ser.write(cmd.encode('ascii')+'\r\n')
+        ser.write(cmd.encode('ascii') + '\r\n')
         out = ser.read()
-        print('Receiving...'+out)
-
+        print('Receiving...' + out)
+# ne marche pas bien du tout
