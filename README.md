@@ -19,8 +19,8 @@ To get info on this module go to the source tree:
 documentation/pyserial_api.rst
 
 ----
-Est que le RT51000 recoit des 7bit ascii code?
-Ess ce qu'il faut lui envoyer des chaines de code ascii ? ou est ce qu'il faut lui du two-digit hexadecimal commande comme 'EF' '9A'?
+Est-ce que le RT51000 recoit des 7bit ascii code?
+Est-ce qu'il faut lui envoyer des chaines de code ascii ? ou est ce qu'il faut lui du two-digit hexadecimal commande comme 'EF' '9A'?
 
 
 ----
