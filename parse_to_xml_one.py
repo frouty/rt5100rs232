@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 from lxml import  etree
 
+
+
+
+with open('/home/lof/rt5100rs232/tmp.log','r') as infile:
+    for line in infile:
+        
+
 root=etree.Element("data", )                  
 #element are organise in an XML Tree structure
 #pour creer un child on peut utiliser la méthode append

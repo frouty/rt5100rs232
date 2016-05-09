@@ -2,19 +2,38 @@
 Programme to get and put from and to the RT5100 NIDEK refractor
 
 basic interface specification
----------
-connector : DIN 8 pin
-synchronous : asynchronus
-Line: Half duplex
-Baud rate: 2400 bit/sec
-Bit lenght : 7 bit 
-Parity check : Even parity
-stopbit: 2 bit 
-Datacode : ASCII
-CR code : yes
+====
+- connector : DIN 8 pin
+- synchronous : asynchronus
+- Line: Half duplex
+- Baud rate: 2400 bit/sec
+- Bit lenght : 7 bit 
+- Parity check : Even parity
+- stopbit: 2 bit 
+- Datacode : ASCII
+- CR code : yes
+
+DATA FORMAT. The RT to the PC
+====
+heading
+----
+SH NIDEK_RT-5100 ID...
+SH semble correspondre au character ascii \x01 qui correspond au character ascii :'soh' qui veut dire "start of heading"
+
+Data source
+----
+Ensuite vient data source
+SX @ bit bit CR
+SX ==  \02 qui correspond au caractere ascii 'stx' : 'Start of Text'
+
+CR carriage return : /0D (0xOD) 
+
+Fin de transmission des datas
+----
+\x04 qui correspond au caractere ascii EOT = 'End Of Transmission'
 
 Pyserial module 
---------
+=====
 To get info on this module go to the source tree:
 documentation/pyserial_api.rst
 
