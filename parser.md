@@ -29,10 +29,17 @@ Ce qui pourrait donner:
 										{'OR':'valod'
 										  'OS':'valos'}
 							}
-	-pour atteindre FarVisionSCA des data subjectives OD: SubjectData['FarVisionSCA']['OR']
+	- pour atteindre FarVisionSCA des data subjectives OD: SubjectData['FarVisionSCA']['OR']
 
 * FinalPrescriptionData= exactement les memes clefs
-	
+
+Finalement
+=====
+Je choisi deux dictionnaires
+	- valuesOD: keys: sph_od, cyl_od, axe_od
+	-valuesOG : keys: sph_os, cyl_os, axe_os
+et on récupere le tye de valeurs mesurée avec la variable 'filter'. On sait ce que l'on demande et ce que l'on demande c'est ce que l'on récupère.
+
 ZIP
 ===
 a = [1, 2, 3, 4, 5]
