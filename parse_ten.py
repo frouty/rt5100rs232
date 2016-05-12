@@ -27,7 +27,7 @@ def get_values(filter):
     """Return a dictionnary of the values
     
         filter(str) : the letter from the interface manual rs-232 of RT-5100
-        
+        Il y a un probleme quand il n'y a aucune ligne qui correspond au filtre.
     """
     coupures = [28, 30, 36, 42, 45] 
     filterR = filter+'R'
@@ -57,10 +57,17 @@ def get_values(filter):
             
         except IOError, (error, strerror):
             print "I/O Error(%s): %s" % (error, strerror)
+    print 'locals():{}'.format(locals())
+    print 'done'
+    print '-'*10
+    return (valuesOD, valuesOS)
 
 if __name__ == '__main__':
-    for i in SCAdict.keys():
-        print '='*10
-        get_values(i)
+    print get_values('O')
+    #===========================================================================
+    # for i in SCAdict.keys():
+    #     print '='*10
+    #     get_values(i)
+    #===========================================================================
        
    
