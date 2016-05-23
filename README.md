@@ -83,8 +83,10 @@ Les valeurs de SCA
 Sphere
 ----
 Si la sphere est plane est ce que la valeur renvoyée est 0 ou null?
-
+le systeme renvoie 6 bit pour la sphere : _ _ 0.00
 Si je ne met rien dans la console rt5100 pour la sphere qu'elle est la valeur renvoyée? Quel est son type, sa longueur, True, False, None?
+Renvoie toujours _ _ 0 0 . 0 0
+Ca ne renvoie  rien si on oublie de cliquer sur AR/FINAL/SUBJECTIVE
 
 Cylindre
 ----
@@ -111,4 +113,31 @@ Si je ne mets rien dans la console RT5100 est ce que cela veut dire que l'axe es
  
  Qu'est ce qu'il faut faire dans ce cas au niveau du script?
  
+ Si on met un axe et que l'on ne met rien dans le cylindre, l'axe renvoyé sera nul.
  
+ 
+ exemple ou AR/FINAL/SUBJECTIVE est à zéro pour toutes les valeurs.
+ ====
+ 
+ NIDEK RT-5100 ID             DA2016/ 5/23
+2016-05-23T00:23:47.685446  @LM
+2016-05-23T00:23:47.772447   R  0.00  0.00  0
+2016-05-23T00:23:47.859444   L  0.00  0.00  0
+2016-05-23T00:23:47.882445  @RM
+2016-05-23T00:23:47.968443  OR  0.00  0.00  0
+2016-05-23T00:23:48.055444  OL  0.00  0.00  0
+2016-05-23T00:23:48.128441  PD64.0        
+2016-05-23T00:23:48.151441  @RT
+2016-05-23T00:23:48.238442  fR  0.00  0.00  0
+2016-05-23T00:23:48.325435  fL  0.00  0.00  0
+2016-05-23T00:23:48.398432  pD64.0        
+2016-05-23T00:23:48.420438  @RT
+2016-05-23T00:23:48.507444  FR  0.00  0.00  0
+2016-05-23T00:23:48.594441  FL  0.00  0.00  0
+2016-05-23T00:23:48.667436  PD64.0        
+2016-05-23T00:23:48.695432  WD35
+2016-05-23T00:23:48.731430  TT 005
+2016-05-23T00:23:48.740429  
+2016-05-23T00:23:49.741531  
+2016-05-23T00:23:50.742683  
+
