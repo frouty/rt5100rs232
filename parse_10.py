@@ -41,11 +41,19 @@ def get_values(filter):
                 if line.find(filterR) != -1 or line.find(filterL) != -1:
                     morceaux = [line[i:j] for i, j in zip([0] + coupures, coupures + [None])] # on coupe les lignes en morceaux qui isolent les champs.
                     values=morceaux[1:5] # on élimine le champ date et on récupere que les champs datas.
-                    #print '-' * 6
-                    #print 'line:{}'.format(line)
-                    #print 'morceaux:%s ' % (morceaux)
-                    #print 'values:{}'.format(values)
-                    #print '{} SCA:{},{},{}'.format(morceaux[1], morceaux[2], morceaux[3], morceaux[4])
+                    # morceaux[2] --> sph 6 bits datas
+                    # morceaux[3] --> cyl 6 bits datas
+                    # morceaux[4] --> axes 6 bits datas
+                    # morceaux[2:5] donne ['S','C','A']
+                    # lets format the str to fit the odoo selection for SCA
+                    values[-1]=values[-1].strip()
+                    for idx in (1,2):
+                        print values[idx]
+                        
+                    print values
+                    import pdb;pdb.set_trace()        
+                    res = [d.strip() for d in morceaux[2:5] if len(d)==3]
+                    
                     if values[0] == filterR: # On filtre pour l'oeil droit
                         valuesOD=dict(zip(keysOR,values[1:]))
                         #print 'valuesOD:{}'.format(valuesOD)
