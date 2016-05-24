@@ -141,3 +141,15 @@ Si je ne mets rien dans la console RT5100 est ce que cela veut dire que l'axe es
 2016-05-23T00:23:49.741531  
 2016-05-23T00:23:50.742683  
 
+Vision plus globale du probleme
+====
+1 je lis le fichier en commencant par la fin
+
+```python
+for line in reversed(open('tmp.log').readlines()):
+    if line.find('NIDEK') == -1: # il n'y a pas le motif Nidek
+        print 'line:{}'.format(line) # je manipule la chaine
+```
+2 je lis chaque 
+	- s'il n'y a que le timestamp je passe à ligne suivant
+	- s'il une des lettres autorisée j'applique la bonne méthode pour couper: partie gauche timestamp et data text et datas
