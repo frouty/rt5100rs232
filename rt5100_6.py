@@ -29,9 +29,11 @@ sio = io.TextIOWrapper(
 with open(outputfile, 'a') as f:  # appends to existing file
     while ser.isOpen():
         datastring = sio.readline()
+        if datastring :
+            print 'datastring is True: {}'.format(datastring)
         # \t is tab; \n is new line
-        f.write(datetime.utcnow().isoformat() + '\t' + datastring + '\n')
-        f.flush()  # force the system to write to disk
+            f.write(datetime.utcnow().isoformat() + '\t' + datastring + '\n')
+            f.flush()  # force the system to write to disk
 
 ser.close()
 
