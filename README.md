@@ -150,7 +150,7 @@ for line in reversed(open('tmp.log').readlines()):
     if line.find('NIDEK') == -1: # il n'y a pas le motif Nidek
         print 'line:{}'.format(line) # je manipule la chaine
 ```
-2 je lis chaque 
+2 je lis chaque ligne:
 	- s'il n'y a que le timestamp je passe à ligne suivant
 	- s'il une des lettres autorisée j'applique la bonne méthode pour couper: partie gauche timestamp et data text et datas
 	
@@ -160,6 +160,8 @@ mapping entre les données du RT et les fields de odoo
 	datas: [['AL', '+1.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00'], ['FR', '-2.00', '0.00'], ['fL', '-3.00', '0.00'], ['fR', '-3.00', '0.00'], ['OL', '-1.00', '0.00'], ['OR', '-1.00', '0.00']]
 	
 'A', 'a', 'F','f' cela correspond dans odoo au field **va\_type** de l'objet oph\_measurement
+```python
+
 def _get_va_type(self, cr, uid, context = None):
         va_type_selection = (
                             ('UCVA', _('UCVA')),  # uncorrected visual acuity
@@ -170,6 +172,7 @@ def _get_va_type(self, cr, uid, context = None):
                             ('AR',_('AutoRefractometer')),
                             )
         return va_type_selection
+```
         
  je veux obtenir un dictionnaire de la forme:
  
