@@ -10,8 +10,8 @@ SCAdict={'f':('subjectdata','FarVisionSCA'),
               'N':('finalprescriptiondata','NearVisionSCA'),
               'O':('ARdata','ObjectiveSCA'),
                }
-keysOR = ('sph_od','cyl_od','axe_od')
-keysOS = ('sph_os','cyl_os','axe_os')
+keysOR = ('sph_od','cyl_od','axe_od','add_od')
+keysOS = ('sph_os','cyl_os','axe_os','add_os')
 #print 'hello'
 # Les points de coupures semblent etre toujours les memes
 # les données recherchées peuvent etre récupérée par l'index
@@ -73,7 +73,7 @@ def cutting(line,coupures):
     """ Cut the line in a list fields of datas
     
     line : str
-    coupures: list with size for cutting
+    coupures: list with size for cutting. depends on description of datas
     
     return: list of fields of datas 
     eg return: values:['FR', '- 2.00', '  0.00', '  0']; ['AL', '+ 1.50']

@@ -29,9 +29,9 @@ for line in reversed(open('tmp.log').readlines()):
         print 'line:{}'.format(line) # je manipule la chaine
     else: break
     
-1 je lis les chaines depuis la fin du fichier
-2 je suppose que dans le fichier il n'y a que des lignes avec des datas
-3 je '
+# 1 je lis les chaines depuis la fin du fichier
+# 2 je suppose que dans le fichier il n'y a que des lignes avec des datas
+# 3 je '
 
 #===============================================================================
 # Ca a l'air sympa

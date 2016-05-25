@@ -153,3 +153,45 @@ for line in reversed(open('tmp.log').readlines()):
 2 je lis chaque 
 	- s'il n'y a que le timestamp je passe à ligne suivant
 	- s'il une des lettres autorisée j'applique la bonne méthode pour couper: partie gauche timestamp et data text et datas
+	
+
+mapping entre les données du RT et les fields de odoo
+-------
+	datas: [['AL', '+1.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00'], ['FR', '-2.00', '0.00'], ['fL', '-3.00', '0.00'], ['fR', '-3.00', '0.00'], ['OL', '-1.00', '0.00'], ['OR', '-1.00', '0.00']]
+	
+'A', 'a', 'F','f' cela correspond dans odoo au field **va\_type** de l'objet oph\_measurement
+def _get_va_type(self, cr, uid, context = None):
+        va_type_selection = (
+                            ('UCVA', _('UCVA')),  # uncorrected visual acuity
+                            ('CVA', _('CVA')),
+                            ('BCVA', _('BCVA')),  # best corrected visual acuity
+                            ('MAVC sous cycloplegique', 'MAVC sous cycloplegique'),
+                            ('Rx', _('Refraction prescription')),  # refraction prescrite
+                            ('AR',_('AutoRefractometer')),
+                            )
+        return va_type_selection
+        
+ je veux obtenir un dictionnaire de la forme:
+ 
+ vals_measurement:{
+ 
+- 'type\_id' : 2 # c'est le type_id de la refraction. Il est fixe il ne bouge pas
+- 'va\_type' : qui doit etre mappé avec la premiere lettre de la premiere str 
+- 'sph\_od'
+- 'sph\_os'
+- 'cyl .....
+}
+
+Pour chaque item  de la liste datas je dois créer ce dictionnaire et je dois crée le record correspondant à cet item.
+
+Essayons déja de créer ce dictionnaire.
+
+Si j'ai 'a' 'A' 'f' 'F' ... vont déterminer la valeur du champ va_type alors on a le field va_type. Donc on peut faire un mapping entre la premiere lettre et la valeur du  odoo fields va\_type
+
+Il me faut une méthode qui me récupere les données de la forme et cela pour chaque va\_type :
+res={'field_odoo':'value', 'va\_type
+mapvatype={'a':
+
+pour chaque va\_type je peux aller chercher les datas du RT5100 et les mettre dans un meme dictionnaire pour les écrire ensuite dans la database.
+
+ '

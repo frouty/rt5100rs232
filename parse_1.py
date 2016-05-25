@@ -7,10 +7,7 @@ def GetTheSentences(infile):
             print result
 
 
-
-
-
 if __name__=='__main__':
     GetTheSentences('tmp.log')
     
-    
+# ca ne va pas du tout.
