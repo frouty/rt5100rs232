@@ -23,7 +23,7 @@ mapvatype={'a':'BCVA',
                     'n':'BCVA',
                     'N': 'Rx',
                     }
-mappedvatype={'BCVA':('a','f','n'),
+mappedvatype={'BCVA':('a','f','n'), # ceux sont les deux seuls valeurs qui ont besoins de SCA et ADD. Pour les verres portes ce n'est pas le RT5100 qui le donne.
                          'Rx':('F','N','A')}
 #===============================================================================
 # cuttingDict={  'a':[28,30,36], # a if for add. 28 cut the timpstamp, 30 the data type and R or L, 36 the value= '+' 'dizaine unité' 'dot' 'decimal1' 'decimal2'
@@ -120,7 +120,7 @@ def getandformat_values(rxlist=[regexSCA,regexADD],log_path='/home/lof/rt5100rs2
     """
     res=[]
     for line in reversed(open(log_path).readlines()):
-        if line.find('NIDEK') == -1: # s'il n'y a pas le motif Nidek
+        if line.find('NIDEK') == -1: # il n'y a pas le motif Nidek
             print 'brut line:{}'.format(line) # je manipule la chaine
             line = trim_timestamp(line)
             print'no timestamp line:{}'.format(line)
@@ -134,8 +134,37 @@ def getandformat_values(rxlist=[regexSCA,regexADD],log_path='/home/lof/rt5100rs2
                     res.append(values)
                     print 'res:{}'.format(res)
             print '---END OF IF---'
-        else: break # si je rencontre le motif "NIDEK" je m'arrete
-    print 'final res : {}'.format(res)
+        else: break
+    #print 'final res from getandformat_values : {}'.format(res)
+    return res
+
+def map2odoofieldsV2(values):
+    """Map datas to ODOO field names
+    
+    values list of datas from rt5100 after parsing
+    values eg: [['AL', '+6.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00', '0'], ['FR', '-2.00', '0.00', '9'], ['fL', '-3.00', '0.00', '0'], ['fR', '-3.00', '0.00', '0'],]
+    values is returned by getandformat_values function
+    """
+    print 'in maptofieldsV2'
+    res={}
+    for item in values:
+        print 'res {}'.format(res)
+        print 'item:{}'.format(item)
+        print 'item[0][0]: {}'.format(item[0][0])
+        print 'item[0][1]:{}'.format(item[0][1])
+        print 'item[1:]: {}'.format(item[1:])
+        if item[0][0] not in res.keys():
+            res.update({item[0][0]:{}})
+            print 'first update res:{}'.format(res)
+            print 'res[item[0][0]] : {}'.format(res[item[0][0]])
+        elif item[0][0] in res.keys():
+            if re.search(r'[aA]', item[0],flags=0): # on est dans les additions. On peut mapper avec les champs d'addition
+                if 'R' in item[0]: # on est à droite
+                    res[item[0][0]].update({'add_od':item[1:]})
+                    if 'L' in item[0]:
+                        res[item[0][0]].update({'add_os':item[1:]})
+        print 'res after second update : {}'.format(res)
+        print '-'*10  
     return res
 
 def map2odoofields(values,va_type): # donne moi les datas pour ce va_type et map sous forme d'un dictionnaire avec les champs de odoo.
@@ -147,9 +176,9 @@ def map2odoofields(values,va_type): # donne moi les datas pour ce va_type et map
     
     va_type is from the selection defined in oph_measurement object
     return dict key = odoo field and value = rt5100 data 
-    reurn eg : 
+   eg :  {'Rx': {'sph_os': '-2.00', 'add_od': '+1.50', 'add_os': '+6.50', 'sph_od': '-2.00', 'type_id': 2, 'cyl_od': '0.00', 'axis_os': '0', 'axis_od': '9', 'cyl_os': '0.00'}}
     """
-        
+    print 'in map2odoofields my values is: {}'.format(values)    
     res=[]
     val_measurement ={'type_id':2} # c'est toujours vrai
     
@@ -157,7 +186,7 @@ def map2odoofields(values,va_type): # donne moi les datas pour ce va_type et map
         for filter in mappedvatype[va_type]:
             if filter in item[0]:
                 res.append(item)
-    print 'res:{}'.format(res)
+    print 'res:{}'.format(res) # cela filtre la liste des datas sur le va_type
     
     for item in res:
         if re.search(r'[aA]', item[0],flags=0): # on est dans les additions. On peut mapper avec les champs d'addition
@@ -176,15 +205,17 @@ def map2odoofields(values,va_type): # donne moi les datas pour ce va_type et map
                                                        'cyl_os':item[2],
                                                        'axis_os':item[3]
                                                               })
-    print val_measurement
-    
-    return val_measurement
+    #print val_measurement
+    res=dict()
+    res[va_type]=val_measurement
+    #print res
+    return res
 
 
 if __name__=='__main__':
 
     datas=getandformat_values()
+    print 'getandformat_values return :{}'.format(datas)
 
-    print 'datas:{}'.format(datas)
-    map2odoofields(datas, 'BCVA')
-    map2odoofields(datas,'Rx')
+    res = map2odoofieldsV2(datas)
+    print "map2odoofields(datasV2, ) : {}".format(res)

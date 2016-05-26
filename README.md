@@ -197,4 +197,76 @@ mapvatype={'a':
 
 pour chaque va\_type je peux aller chercher les datas du RT5100 et les mettre dans un meme dictionnaire pour les écrire ensuite dans la database.
 
- '
+==========
+ [['AL', '+6.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00', '0'], ['FR', '-2.00', '0.00', '9'], ['fL', '-3.00', '0.00', '0'], ['fR', '-3.00', '0.00', '0'],]'
+
+ A partir de la liste ci dessus je voudrais obtenir:
+ 
+ {
+ 'A' : {'add\_os':'+6.50','add\_od':'+1.50'},
+ 'F' : {'sph\_os':'-2.00','cyl\_os':'0.00','axis\_os':'0'},
+ 'f' : {....},
+ ....
+ }
+ 
+ la liste des va_type est :
+ ```python 
+ def _get_va_type(self, cr, uid, context = None):
+        va_type_selection = (
+                            ('UCVA', _('UCVA')),  # uncorrected visual acuity
+                            ('CVA', _('CVA')),
+                            ('BCVA', _('BCVA')),  # best corrected visual acuity
+                            ('MAVC sous cycloplegique', 'MAVC sous cycloplegique'),
+                            ('Rx', _('Refraction prescription')),  # refraction prescrite
+                            ('AR',_('AutoRefractometer')),
+                            )
+        return va_type_selection
+```
+ Ne serait-il pas plus utile d'avoir un dictionnaire final de la forme:
+ 
+ {
+ 'BCVA': {'sphod':'+2.0', 'cylod':'+5', 'axisod':'+5', og, 'addod':'+5','addos':'+5'},
+ 'Rx': .......
+ }
+ 
+ Comment transformer : ['AL', '+6.50'], ['AR', '+1.50']
+en :
+
+{'A':{'add_od':'+6.50','add_og':'+6.50'}
+}
+
+en intermediaire on peut faire
+{'A':{'L':'+6.50','R':'+6.50'}
+}
+Ca ca va pour les additions mais pas si SCA car il y a trois valeurs pour R et L
+
+J'ai pas une liste de keys et une liste de values mais une list keys, values
+
+
+     def get_rt5100(self,cr,uid,ids,context=None):
+        """Get the datas from the RT-5100
+        """
+        datas=rt5100.getandformat_values()
+				res= rt5100.lamethodequidonneledictionnaireapartirdesdatas(datas)
+				je boucle sur les clefs de ce dictionnaire.
+				for k in res.keys():
+					
+
+        records=self.browse(cr,uid,ids,context)
+        for record in records:
+            vals_measurement = {
+                            #'type_id.code' : 'ref', #TODO
+                            'type_id' : 2, 
+                            'meeting_id' : record.id, #TODO
+                            'sph_od' : FinalSCA[0]['sph_od'],
+                            'cyl_od': FinalSCA[0]['cyl_od'],
+                            'axis_od':FinalSCA[0]['axis_od'],
+                            'sph_os' : FianlSCA[1]['sph_os'],
+                            'cyl_os':FinalSCA[1]['cyl_os'],
+                            'axis_os':FinalSCA[1]['axis_os'],
+                            'add_od': todo,
+                            'add_os':todo,
+                            'va_type': todo
+                            }
+        oph_measurement_obj =  self.pool.get('oph.measurement').create(cr, uid, vals_measurement, context = context)
+        return True
