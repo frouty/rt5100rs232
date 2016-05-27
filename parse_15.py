@@ -77,7 +77,7 @@ def trimspace_regex(val):
         val = val[:1] + val[2:]
     return val
 
-def trim_timestamp(line, lenght = 29):
+def trim_timestamp(line, lenght = 28):
     """Trim the timestamp
     
     because I don't need it and the timestamp is always the same lengh 
