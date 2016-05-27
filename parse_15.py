@@ -25,6 +25,15 @@ mapvatype = {'a':'BCVA',
                     }
 mappedvatype = {'BCVA':('a', 'f', 'n'),  # ceux sont les deux seuls valeurs qui ont besoins de SCA et ADD. Pour les verres portes ce n'est pas le RT5100 qui le donne.
                          'Rx':('F', 'N', 'A')}
+
+#===============================================================================
+# Pour l'instant dans ODOO je n'utilise les valeurs de 'nN' qui est la formule SCA de pres (=avec l'ADD')
+#===============================================================================
+
+
+
+
+
 #===============================================================================
 # cuttingDict={  'a':[28,30,36], # a if for add. 28 cut the timpstamp, 30 the data type and R or L, 36 the value= '+' 'dizaine unité' 'dot' 'decimal1' 'decimal2'
 #                     'A':[28,30,36], # A for addition
@@ -169,14 +178,14 @@ def map2odoofieldsV2(values):
         if re.search(r'[fFnN]', item[0], flags = 0):  # on est sur du SCA
             if 'R' in item[0]:
                 res[item[0][0]].update({'sph_od':item[1],
-                                                       'cyl_od':item[2],
-                                                       'axis_od':item[3]
-                                                                    })
+                                        'cyl_od':item[2],
+                                        'axis_od':item[3]
+                                         })
             if 'L' in item[0]:
                 res[item[0][0]].update({'sph_os':item[1],
-                                                       'cyl_os':item[2],
-                                                       'axis_os':item[3]
-                                                              })
+                                        'cyl_os':item[2],
+                                        'axis_os':item[3]
+                                         })
 
 
     print '-' * 10
@@ -234,3 +243,45 @@ if __name__ == '__main__':
 
     res = map2odoofieldsV2(datas)
     print "map2odoofields(datasV2, ) : {}".format(res)
+
+
+    print type(res)
+    for item in res.keys():
+        print 'item | res[item]: {}|{}'.format(item, res[item])
+        val_measurement
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #===============================================================================
+# mapvatype = {'a':'BCVA',
+#                     'A':'Rx',
+#                     'f':'BCVA',
+#                     'F':'Rx',
+#                     'n':'BCVA',
+#                     'N': 'Rx',
+#                     }
+# mappedvatype = {'BCVA':('a', 'f', 'n'), 'Rx':('F', 'N', 'A')}
+#
+# for oldk in res.keys():  # mondict[newk]=mondict.pop([oldk])
+#     print oldk
+#     res[mapvatype[oldk]] = res.pop(oldk)
+#     print res
+#     print '---'
+# print 'new res is: {}'.format(res)
+
+# On ne peut pas simplementsubstituer les clefs 'A' 'a', 'f', 'n'.... avec les selections de odoo
+# Pour cela il faut rentrer les ADD dans les SCA et ce n'est pas simple
+# Essayons de rentrer le dictionnaire res dans les tables.
+#===============================================================================
