@@ -23,4 +23,6 @@ encoding/rt5100_3.py=utf-8
 encoding/rt5100_4.py=utf-8
 encoding/rt5100_5.py=utf-8
 encoding/rt5100_6.py=utf-8
+encoding/sandbox.py=utf-8
+encoding/settings.py=utf-8
 encoding/test.py=utf-8

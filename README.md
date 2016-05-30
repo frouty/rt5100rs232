@@ -242,6 +242,8 @@ Ca ca va pour les additions mais pas si SCA car il y a trois valeurs pour R et L
 
 J'ai pas une liste de keys et une liste de values mais une list keys, values
 
+{'A': {'add_od': '+0.75', 'add_os': '+0.75'}, 'F': {'sph_os': '0.00', 'sph_od': '-1.25', 'cyl_od': '-0.75', 'axis_os': '0', 'axis_od': '30', 'cyl_os': '0.00'}}
+Avec ce dictionnaire c'est pas fini car il faut merger le valeur de 'A' et la valeur de "F" et la valeur de 'f' avec 'a'.
 
      def get_rt5100(self,cr,uid,ids,context=None):
         """Get the datas from the RT-5100
