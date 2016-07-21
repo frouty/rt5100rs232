@@ -1,6 +1,13 @@
 # rt5100rs232
 Programme to get and put from and to the RT5100 NIDEK refractor
 
+Principe 
+====
+l'executable  qui va lire les données et les envoyer vers un fichier 
+qui sera ensuite parsé pour que les données soient intégrer dans odoo est:
+ 
+listener_rt5100.py
+
 basic interface specification
 ====
 - connector : DIN 8 pin
