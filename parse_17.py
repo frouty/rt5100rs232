@@ -77,7 +77,7 @@ mappedvatype = {
 #===============================================================================
 
 regexADD = r'[Aa][RL]'  # regex to get the line with ADD datas
-#regexSCA = r'[OfFnN][RL]'  # regex tp get the line with SCA datas.
+# regexSCA = r'[OfFnN][RL]'  # regex tp get the line with SCA datas.
 regexSCA = r'[OfFnN ][RL]'  # regex tp get the line with SCA datas.
 regexVA = r'[VUWMvu][RLB]'  # regex to catch datas for VA
 
@@ -92,13 +92,13 @@ def zero2none(val):
     """Set val to None if val is 0.00, + 0.00, - 0.00
     """
     logging.info('in zero2none')
-    
+
     rx = '[1-9]|[a-zA-Z]'
-    if not re.search(rx, val, flags = 0): # si je n'ai que des zero alors set val to none
+    if not re.search(rx, val, flags = 0):  # si je n'ai que des zero alors set val to none
         val = None
-    
+
     logging.info('return val : %s', val)
-    
+
     return val
 
 def trimzero(val):
@@ -120,7 +120,7 @@ def trimzero(val):
         # print 'match:{}'.format(match)
         if val[-1] == '0':
             res = val[:-1]
-    logging.info('return res: %s',res)
+    logging.info('return res: %s', res)
     return res
 
 def trimspace_regex(val):
@@ -132,7 +132,7 @@ def trimspace_regex(val):
     return the trimed string
     """
     logging.info('in trimspace_regex')
-    
+
     regex = r'^[+-] '  # don't forget the space at the end of the regex
     if re.search(regex, val, flags = 0):
         # match = re.search(regex, val, flags = 0)
@@ -179,63 +179,76 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
     rxlist : list of regex from specification of datas RT5100
     log_path: str path to file with datas from rt5100
     
-    return : list of datas
-    eg: return [['FL', '+20.75', '-6.00'], ['FR', '+20.75', '-6.00']]
+    return : dictionnary of datas
+    eg: return 
+    UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
+    AR [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']]
+    Rx [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']]
+    BCVA [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']]
+    CVA [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]
+
     Those datas could be inserted in the database except that you need to map them to field names.
     """
     logging.info('in getandformat_values')
     res = []
-    final={}
-    first=[]
+    final = {}
+    first = []
     for line in reversed(open(log_path).readlines()):
         if line.find('NIDEK') == -1:  # Tant que je ne trouve pas le motif 'NIDEK' je traite la ligne.
             logging.info('brut line:%s', line)
-            if line.find('@RT')!=-1: # la ligne est un @RT. 
+            if line.find('@RT') != -1:  # la ligne est un @RT.
                 logging.info('find an @RT')
-                final['@RT']=res
-                logging.info('final:%s',final)
-                logging.info('final.values():%s', final.values())
-                for item in final.values():
-                    for i in item:
-                        logging.info('values:%s', i)
-                        logging.info('%s',i[0][0])
-                        first.append(i[0][0])
-                    mystring="".join(first)
+                for item in res:
+                    logging.info('item:%s', item)
+                    first.append(item[0][0])
+                    logging.info('first :%s', first)
+                    mystring = "".join(first)
                     logging.info('mystring:%s', mystring)
-                        #je teste si mystring est upper
-                if mystring.isupper():
-                    va_type = 'Rx'
-                    mystring=[]
-                    logging.info('va_type:%s', va_type)
-                    final[va_type]=res
+                # je test l'existence de M et W
+                if mystring.find('MW') != -1:
+                    va_type = 'UCVA'
+                    first = []
+                    final[va_type] = res
                     logging.info('final:%s', final)
-                else:
+                # je teste si mystring est upper
+                if mystring.isupper()and mystring.find('MW') == -1:
+                    va_type = 'Rx'
+                    first = []
+                    logging.info('va_type:%s', va_type)
+                    logging.info('res:%s', res)
+                    final[va_type] = res
+                    logging.info('final:%s', final)
+                if mystring.islower()and mystring.find('MW') == -1:
                     va_type = 'BCVA'
                     logging.info('va_type:%s', va_type)
-                #on test si le premier caractere est upper
-                # si c'est le cas si c'est donc upper 
+                    final[va_type] = res
+                    logging.info('final:%s', final)
+                    first = []
+                # on test si le premier caractere est upper
+                # si c'est le cas si c'est donc upper
                 # alors on sait que l'on a .un va_type = 'Rx'
                 # si c'est minuscule alors on va_type = 'BCVA"
                 # comment on fait pour savoir si on upper ou lower.
-                # 
-                #a partir de là il faut lancer la méthode qui va nous enregistrer les données.
-                res=[] #on remet à zero la liste
-            
-            if line.find('@RM')!=-1:
+                #
+                # a partir de là il faut lancer la méthode qui va nous enregistrer les données.
+                res = []  # on remet à zero la liste
+
+            if line.find('@RM') != -1:
                 logging.info('find an @RM')
-                final['@RM']=res # ce dictionnaire n'est pas tres informatif.
+                va_type = 'AR'
+                final[va_type] = res  # ce dictionnaire n'est pas tres informatif.
                 # sous @RM c'est toujours  'va_type' = 'AR'
-                logging.info('final:%s',final)
-                res=[]
-            
-            if line.find('@LM')!=-1:
+                logging.info('final:%s', final)
+                res = []
+
+            if line.find('@LM') != -1:
                 logging.info('find an @LM')
-                final['@LM']=res
-                logging.info('final:%s',final)
-                # c'est toujours 'CVA'
-                logging.info('items: %s', final.items())
-                res=[]
-            
+                va_type = 'CVA'
+                final[va_type] = res
+                logging.info('final:%s', final)
+                # les lignes sous '@LM' c'est toujours 'CVA'
+                res = []
+
             line = trim_timestamp(line)
             logging.info('no timestamp line: %s', line)
             for rx in rxlist:
@@ -247,17 +260,19 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
                     logging.info('formated trimspaced values: %s', values)
                     if re.search(rxlist[0], line, flags = 0):  # don't trimzero ADD values.
                         values = [trimzero(val) for val in values]
-                        logging.info('trimzero: %s',values)
+                        logging.info('trimzero: %s', values)
                     values = [zero2none(val) for val in values]
                     logging.info('zero2none: %s', values)
                     res.append(values)
-                    logging.info('append res: %s',res)
+                    logging.info('append res: %s', res)
 #                    values=[trimzero(val)  if re.search(rxlist[1],val,flags=0) else val for val in values  ] # Don't do that for ADD
-                    logging.info( '**res**: %s',res)
+                    logging.info('**res**: %s', res)
             logging.info('---END OF IF---')
         else: break
-    logging.info('getandformatvalues method return:%s',res)
-    return res
+    logging.info('getandformatvalues method return:%s', res)
+    for k, v in final.iteritems():
+        print k, v
+    return final
 
 
 def mergeADD2SCA(res):
@@ -286,19 +301,40 @@ def mergeADD2SCA(res):
                 # res[mapvatype['f']] = res.pop('f')
     return res
 
-def substitute(res):
-    """Substitute keys (f,F,N,n)with selection values from Odoo
+# def substitute(res):
+#     """Substitute keys (f,F,N,n)with selection values from Odoo
+#
+#     res : dict return by mergeADD2SCA
+#
+#     return : dict
+#     return eg:
+#     """
+#
+#     for key in res.keys():
+#         res[mapvatype[key]] = res.pop[key]
+#     print 'in substitute return : {}'.format(res)
+#     return res
+def map2odoofieldsV2(final):
+    """Map datas to ODOO field names
     
-    res : dict return by mergeADD2SCA
-    
-    return : dict 
-    return eg: 
+    final dict of  datas return by getandformat_values method
+    final eg: UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
+    AR [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']]
+    Rx [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']]
+    BCVA [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']]
+    CVA [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]
     """
 
-    for key in res.keys():
-        res[mapvatype[key]] = res.pop[key]
-    print 'in substitute return : {}'.format(res)
+    res = {}
+    for key in final.keys():
+        print key
+        print final[key]
+        for v in final[key]:
+            print v
+
+    logging.info('res :%s', res)
     return res
+
 
 def map2odoofields(values):
     """Map datas to ODOO field names
@@ -307,7 +343,7 @@ def map2odoofields(values):
     values eg: [['AL', '+6.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00', '0'], ['FR', '-2.00', '0.00', '9'], ['fL', '-3.00', '0.00', '0'], ['fR', '-3.00', '0.00', '0'],]
     values is returned by getandformat_values function
     """
-    print 'in maptofieldsV2'
+    print 'in map2fields'
     res = {}
     for item in values:  # 1ere pass on populate le dictionnary avec les clefs primaires : A, a , F, f....and empty dict
 #         print 'res {}'.format(res)
@@ -343,11 +379,13 @@ def map2odoofields(values):
 
 
 if __name__ == '__main__':
-    
-    logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S /', level=logging.INFO)
+
+    logging.basicConfig(format = '%(asctime)s %(message)s', datefmt = '%m/%d/%Y %I:%M:%S /', level = logging.INFO)
 
     datas = getandformat_values()
     print 'getandformat_values return :{}'.format(datas)
+
+    map2odoofieldsV2(datas)
 
 #     res = mergeandsubstitute(map2odoofields(datas))
 #     print "map2odoofields(datasV2, ) : {}".format(res)
