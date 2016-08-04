@@ -314,11 +314,14 @@ def mergeADD2SCA(res):
 #         res[mapvatype[key]] = res.pop[key]
 #     print 'in substitute return : {}'.format(res)
 #     return res
-def map2odoofieldsV2(final):
+def map2odoofieldsV2(raw):
     """Map datas to ODOO field names
     
-    final dict of  datas return by getandformat_values method
-    final eg: UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
+    raw dict of  datas return by getandformat_values method
+    it's a dict with raw datas from rt5100
+    
+    
+    raw eg: UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
     AR [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']]
     Rx [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']]
     BCVA [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']]
@@ -326,13 +329,112 @@ def map2odoofieldsV2(final):
     """
 
     res = {}
-    for key in final.keys():
-        print key
-        print final[key]
-        for v in final[key]:
-            print v
+    res_int = []
 
-    logging.info('res :%s', res)
+    # use a correspondance table between model fieds and rt5100 character coding
+    va_or = re.compile('(VR|WR|vR)')
+    va_ol = re.compile('(VL|WL|vL)')
+
+    va_or_extended = re.compile('(MR|UR|uR)')
+    va_ol_extended = re.compile('(ML|UL|uL)')
+
+    va_bin = re.compile('(WB|vB|VB)')
+    va_bin_extended = re.compile('(MB|UB|uB)')
+
+    add_od = re.compile('(aR|AR)')
+    add_os = re.compile('(aL|AL)')
+
+    sca_or = re.compile('(^R|OR|fR|FR)')
+    sca_os = re.compile('(^L|OL|fL|FL)')
+
+    sca_near_or = re.compile('(nR|NR)')
+    sca_near_os = re.compile('(nL|NL)')
+#     sph_od = re.compile('(R|OR|fR|FR)')
+#     cyl_od = re.compile('(R|OR|fR|FR)')
+#     axis_od = re.compile('()')
+#
+#     sph_os = re.compile('()')
+#     cyl_os = re.compile('()')
+#     axis_os = re.compile('()')
+#
+
+#     sph_near_or = re.compile('()')
+#     cyl_near_or = re.compile('()')
+#     axis_near_or = re.compile('()')
+#
+#     sph_near_os = re.compile('()')
+#     cyl_near_os = re.compile('()')
+#     axis_near_os = re.compile('()')
+
+
+    mapregex = {
+              va_or:'va_or',
+              va_ol:'va_ol',
+              va_or_extended: 'va_or_extended',
+              va_ol_extended:'va_ol_extended',
+
+              va_bin:'va_bin',
+              va_bin_extended:'va_bin_extended',
+
+              add_od: 'add_od',
+              add_os: 'add_os',
+#
+#               sca_or :'sca_or',
+#               sca_os : 'sca_os',
+#               sca_near_or:'sca_near_or',
+#               sca_near_os :'sca_nera_os',
+
+#             sph_od:'sph_od',
+#             cyl_od:'cyl_od',
+#             axis_od:'axis_od',
+#
+#             sph_os:'sph_os',
+#             cyl_os:'cyl_os',
+#             axis_os:'axis_os',
+#
+#             sph_near_or:'sph_near_or',
+#             cyl_near_or:'cyl_near_or',
+#             axis_near_or:'axis_near_or',
+#
+#             sph_near_os:'sph_near_os',
+#             cyl_near_os:'cyl_near_os',
+#             axis_near_os:' axis_near_os',
+              }
+
+
+    # substitute characters coding rt5100 by model fields name
+    # only for va datas
+    for key in raw.keys():  # j'itere sur chaque key de raw datas. J'obtiens une liste de liste
+        res_int[:] = []
+        print '=' * 10
+        print 'key:{}'.format(key)
+        print 'raw[{}]:{}'.format(key, raw[key])
+        for item in raw[key]:  # J'itere sur chaque liste de la liste. item contient les datas.
+            print 'item:{}'.format(item)
+            for k, v in mapregex.iteritems():
+                item[0] = re.sub(k, v, item[0])  # je substitue le codage du RT5100 par les fields name
+            print 'item after sub:{}'.format(item)
+            res_int.append(item)
+            print 'res_int : {}'.format(res_int)
+        res[key] = res_int
+        print 'key:{}'.format(key)
+        print 'res:{}'.format(res)
+        for k, v in res.items():
+            print '-' * 4
+            print k
+            for item in v:
+                print item
+
+        print "res:{}".format(res)
+                # print v
+
+        # replaced = [va_or.sub('va_or', w) for w in final[key][0]]
+        # print 'replaced:{}'.format(replaced)
+#         for v in final[key]:
+#             print v
+
+
+    logging.info('final :%s', raw)
     return res
 
 
@@ -382,10 +484,13 @@ if __name__ == '__main__':
 
     logging.basicConfig(format = '%(asctime)s %(message)s', datefmt = '%m/%d/%Y %I:%M:%S /', level = logging.INFO)
 
-    datas = getandformat_values()
-    print 'getandformat_values return :{}'.format(datas)
+#     datas = getandformat_values()
+#     print 'getandformat_values return :{}'.format(datas)
+
+    datas = {'UCVA': [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']], 'AR': [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']], 'Rx': [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']], 'BCVA': [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']], 'CVA': [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]}
 
     map2odoofieldsV2(datas)
+
 
 #     res = mergeandsubstitute(map2odoofields(datas))
 #     print "map2odoofields(datasV2, ) : {}".format(res)
