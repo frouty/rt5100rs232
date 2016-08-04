@@ -329,7 +329,7 @@ def map2odoofieldsV2(raw):
     """
 
     res = {}
-    res_int = []
+    list_int = []
 
     # use a correspondance table between model fieds and rt5100 character coding
     va_or = re.compile('(VR|WR|vR)')
@@ -376,8 +376,8 @@ def map2odoofieldsV2(raw):
               va_bin:'va_bin',
               va_bin_extended:'va_bin_extended',
 
-              add_od: 'add_od',
-              add_os: 'add_os',
+#               add_od: 'add_od',
+#               add_os: 'add_os',
 #
 #               sca_or :'sca_or',
 #               sca_os : 'sca_os',
@@ -405,27 +405,43 @@ def map2odoofieldsV2(raw):
     # substitute characters coding rt5100 by model fields name
     # only for va datas
     for key in raw.keys():  # j'itere sur chaque key de raw datas. J'obtiens une liste de liste
-        res_int[:] = []
+        # res[key] = list_int
+        list_int = []
+        print 'res:{}'.format(res)
         print '=' * 10
         print 'key:{}'.format(key)
         print 'raw[{}]:{}'.format(key, raw[key])
-        for item in raw[key]:  # J'itere sur chaque liste de la liste. item contient les datas.
-            print 'item:{}'.format(item)
+        for item in raw[key]:  # J'itere sur chaque item de la liste. item contient les datas.
+            # print 'item:{}'.format(item)
             for k, v in mapregex.iteritems():
                 item[0] = re.sub(k, v, item[0])  # je substitue le codage du RT5100 par les fields name
-            print 'item after sub:{}'.format(item)
-            res_int.append(item)
-            print 'res_int : {}'.format(res_int)
-        res[key] = res_int
-        print 'key:{}'.format(key)
+            # print 'item after sub:{}'.format(item)
+            list_int.append(item)
+            # print 'list_int : {}'.format(list_int)
+            # print'-' * 5
+            # for item in list_int:
+            #    print item
+            # print '-' * 5
+        print '-' * 10
+        print 'liste intermédiaire:{}'.format(list_int)
         print 'res:{}'.format(res)
-        for k, v in res.items():
-            print '-' * 4
-            print k
-            for item in v:
-                print item
+        res[key] = list_int
+        print 'res updated with list intermediaire:{}'.format(res)
+        print '=' * 10
+    print 'res final en sotie de boucle:{}'.format(res)
+    print 'keys:{}'.format(res.keys())
+    for v in res.itervalues():
+        print 'value:{}'.format(v)
+#     print "res:{}".format(res)
+#     print res.values()
+#     for k in res.keys():
+#         print 'key of res:{}'.format(k)
+#     for k, v in res.iteritems():
+#         print k
+#         print v
+#         #
 
-        print "res:{}".format(res)
+
                 # print v
 
         # replaced = [va_or.sub('va_or', w) for w in final[key][0]]
