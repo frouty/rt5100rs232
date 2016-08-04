@@ -77,7 +77,7 @@ mappedvatype = {
 #===============================================================================
 
 regexADD = r'[Aa][RL]'  # regex to get the line with ADD datas
-#regexSCA = r'[OfFnN][RL]'  # regex tp get the line with SCA datas.
+# regexSCA = r'[OfFnN][RL]'  # regex tp get the line with SCA datas.
 regexSCA = r'[OfFnN ][RL]'  # regex tp get the line with SCA datas.
 regexVA = r'[VUWMvu][RLB]'  # regex to catch datas for VA
 
@@ -92,13 +92,13 @@ def zero2none(val):
     """Set val to None if val is 0.00, + 0.00, - 0.00
     """
     logging.info('in zero2none')
-    
+
     rx = '[1-9]|[a-zA-Z]'
-    if not re.search(rx, val, flags = 0): # si je n'ai que des zero alors set val to none
+    if not re.search(rx, val, flags = 0):  # si je n'ai que des zero alors set val to none
         val = None
-    
+
     logging.info('return val : %s', val)
-    
+
     return val
 
 def trimzero(val):
@@ -120,7 +120,7 @@ def trimzero(val):
         # print 'match:{}'.format(match)
         if val[-1] == '0':
             res = val[:-1]
-    logging.info('return res: %s',res)
+    logging.info('return res: %s', res)
     return res
 
 def trimspace_regex(val):
@@ -132,7 +132,7 @@ def trimspace_regex(val):
     return the trimed string
     """
     logging.info('in trimspace_regex')
-    
+
     regex = r'^[+-] '  # don't forget the space at the end of the regex
     if re.search(regex, val, flags = 0):
         # match = re.search(regex, val, flags = 0)
@@ -179,18 +179,24 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
     rxlist : list of regex from specification of datas RT5100
     log_path: str path to file with datas from rt5100
     
-    return : list of datas
-    eg: return [['FL', '+20.75', '-6.00'], ['FR', '+20.75', '-6.00']]
+    return : dictionnary of datas
+    eg: return 
+    UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
+    AR [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']]
+    Rx [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']]
+    BCVA [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']]
+    CVA [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]
+
     Those datas could be inserted in the database except that you need to map them to field names.
     """
     logging.info('in getandformat_values')
     res = []
-    final={}
-    first=[]
-    for line in reversed(open(log_path).readlines()):
+    final = {}
+    first = []
+    for line in reversed(open(log_path).readlines()):# read each line starting by the end
         if line.find('NIDEK') == -1:  # Tant que je ne trouve pas le motif 'NIDEK' je traite la ligne.
             logging.info('brut line:%s', line)
-            if line.find('@RT')!=-1: # la ligne est un @RT. 
+            if line.find('@RT') != -1:  # la ligne est un @RT.
                 logging.info('find an @RT')
                 #final['@RT']=res
                 logging.info('final:%s',final)
@@ -199,45 +205,67 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
                     for i in item:
                         logging.info('values:%s', i)
                         logging.info('%s',i[0][0])
-                        first.append(i[0][0])
+                        first.append(i[0][0]) # i[0][0] is the first character of the first list of the intrecated
                     mystring="".join(first)
-                    logging.info('mystring:%s', mystring)
-                        #je teste si mystring est upper
-                if mystring.isupper():
-                    va_type = 'Rx'
-                    mystring=[]
-                    logging.info('va_type:%s', va_type)
-                    final[va_type]=res
-                    logging.info('final:%s', final)
-                else:
-                    va_type = 'BCVA'
-                    logging.info('va_type:%s', va_type)
-                    final[va_type] = res
-                    mystring=[]
-                #on test si le premier caractere est upper
-                # si c'est le cas si c'est donc upper 
-                # alors on sait que l'on a .un va_type = 'Rx'
-                # si c'est minuscule alors on va_type = 'BCVA"
-                # comment on fait pour savoir si on upper ou lower.
-                # 
-                #a partir de là il faut lancer la méthode qui va nous enregistrer les données.
-                res=[] #on remet à zero la liste
-            
-            if line.find('@RM')!=-1:
+# =======
+#                 for item in res:
+#                     logging.info('item:%s', item)
+#                     first.append(item[0][0])
+#                     logging.info('first :%s', first)
+#                     mystring = "".join(first)
+# >>>>>>> 1864103cef37ce19f55c0e116714d191416a8b65
+#                     logging.info('mystring:%s', mystring)
+#                 # je test l'existence de M et W
+#                 if mystring.find('MW') != -1:
+#                     va_type = 'UCVA'
+#                     first = []
+#                     final[va_type] = res
+#                     logging.info('final:%s', final)
+#                 # je teste si mystring est upper
+#                 if mystring.isupper()and mystring.find('MW') == -1:
+#                     va_type = 'Rx'
+#                     first = []
+#                     logging.info('va_type:%s', va_type)
+#                     logging.info('res:%s', res)
+#                     final[va_type] = res
+#                     logging.info('final:%s', final)
+#                 if mystring.islower()and mystring.find('MW') == -1:
+#                     va_type = 'BCVA'
+#                     logging.info('va_type:%s', va_type)
+#                     final[va_type] = res
+# <<<<<<< HEAD
+#                     mystring=[]
+#                 #on test si le premier caractere est upper
+#                 # si c'est le cas si c'est donc upper 
+# =======
+#                     logging.info('final:%s', final)
+#                     first = []
+#                 # on test si le premier caractere est upper
+#                 # si c'est le cas si c'est donc upper
+# >>>>>>> 1864103cef37ce19f55c0e116714d191416a8b65
+#                 # alors on sait que l'on a .un va_type = 'Rx'
+#                 # si c'est minuscule alors on va_type = 'BCVA"
+#                 # comment on fait pour savoir si on upper ou lower.
+#                 #
+#                 # a partir de là il faut lancer la méthode qui va nous enregistrer les données.
+#                 res = []  # on remet à zero la liste
+
+            if line.find('@RM') != -1:
                 logging.info('find an @RM')
-                final['@RM']=res # ce dictionnaire n'est pas tres informatif.
+                va_type = 'AR'
+                final[va_type] = res  # ce dictionnaire n'est pas tres informatif.
                 # sous @RM c'est toujours  'va_type' = 'AR'
-                logging.info('final:%s',final)
-                res=[]
-            
-            if line.find('@LM')!=-1:
+                logging.info('final:%s', final)
+                res = []
+
+            if line.find('@LM') != -1:
                 logging.info('find an @LM')
-                final['@LM']=res
-                logging.info('final:%s',final)
-                # c'est toujours 'CVA'
-                logging.info('items: %s', final.items())
-                res=[]
-            
+                va_type = 'CVA'
+                final[va_type] = res
+                logging.info('final:%s', final)
+                # les lignes sous '@LM' c'est toujours 'CVA'
+                res = []
+
             line = trim_timestamp(line)
             logging.info('no timestamp line: %s', line)
             for rx in rxlist:
@@ -249,17 +277,19 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
                     logging.info('formated trimspaced values: %s', values)
                     if re.search(rxlist[0], line, flags = 0):  # don't trimzero ADD values.
                         values = [trimzero(val) for val in values]
-                        logging.info('trimzero: %s',values)
+                        logging.info('trimzero: %s', values)
                     values = [zero2none(val) for val in values]
                     logging.info('zero2none: %s', values)
                     res.append(values)
-                    logging.info('append res: %s',res)
+                    logging.info('append res: %s', res)
 #                    values=[trimzero(val)  if re.search(rxlist[1],val,flags=0) else val for val in values  ] # Don't do that for ADD
-                    logging.info( '**res**: %s',res)
+                    logging.info('**res**: %s', res)
             logging.info('---END OF IF---')
         else: break
-    logging.info('getandformatvalues method return:%s',res)
-    return res
+    logging.info('getandformatvalues method return:%s', res)
+    for k, v in final.iteritems():
+        print k, v
+    return final
 
 
 def mergeADD2SCA(res):
@@ -288,19 +318,158 @@ def mergeADD2SCA(res):
                 # res[mapvatype['f']] = res.pop('f')
     return res
 
-def substitute(res):
-    """Substitute keys (f,F,N,n)with selection values from Odoo
+# def substitute(res):
+#     """Substitute keys (f,F,N,n)with selection values from Odoo
+#
+#     res : dict return by mergeADD2SCA
+#
+#     return : dict
+#     return eg:
+#     """
+#
+#     for key in res.keys():
+#         res[mapvatype[key]] = res.pop[key]
+#     print 'in substitute return : {}'.format(res)
+#     return res
+def map2odoofieldsV2(raw):
+    """Map datas to ODOO field names
     
-    res : dict return by mergeADD2SCA
+    raw dict of  datas return by getandformat_values method
+    it's a dict with raw datas from rt5100
     
-    return : dict 
-    return eg: 
+    
+    raw eg: UCVA [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']]
+    AR [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']]
+    Rx [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']]
+    BCVA [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']]
+    CVA [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]
     """
 
-    for key in res.keys():
-        res[mapvatype[key]] = res.pop[key]
-    print 'in substitute return : {}'.format(res)
+    res = {}
+    list_int = []
+
+    # use a correspondance table between model fieds and rt5100 character coding
+    va_or = re.compile('(VR|WR|vR)')
+    va_ol = re.compile('(VL|WL|vL)')
+
+    va_or_extended = re.compile('(MR|UR|uR)')
+    va_ol_extended = re.compile('(ML|UL|uL)')
+
+    va_bin = re.compile('(WB|vB|VB)')
+    va_bin_extended = re.compile('(MB|UB|uB)')
+
+    add_od = re.compile('(aR|AR)')
+    add_os = re.compile('(aL|AL)')
+
+    sca_or = re.compile('(^R|OR|fR|FR)')
+    sca_os = re.compile('(^L|OL|fL|FL)')
+
+    sca_near_or = re.compile('(nR|NR)')
+    sca_near_os = re.compile('(nL|NL)')
+#     sph_od = re.compile('(R|OR|fR|FR)')
+#     cyl_od = re.compile('(R|OR|fR|FR)')
+#     axis_od = re.compile('()')
+#
+#     sph_os = re.compile('()')
+#     cyl_os = re.compile('()')
+#     axis_os = re.compile('()')
+#
+
+#     sph_near_or = re.compile('()')
+#     cyl_near_or = re.compile('()')
+#     axis_near_or = re.compile('()')
+#
+#     sph_near_os = re.compile('()')
+#     cyl_near_os = re.compile('()')
+#     axis_near_os = re.compile('()')
+
+
+    mapregex = {
+              va_or:'va_or',
+              va_ol:'va_ol',
+              va_or_extended: 'va_or_extended',
+              va_ol_extended:'va_ol_extended',
+
+              va_bin:'va_bin',
+              va_bin_extended:'va_bin_extended',
+
+#               add_od: 'add_od',
+#               add_os: 'add_os',
+#
+#               sca_or :'sca_or',
+#               sca_os : 'sca_os',
+#               sca_near_or:'sca_near_or',
+#               sca_near_os :'sca_nera_os',
+
+#             sph_od:'sph_od',
+#             cyl_od:'cyl_od',
+#             axis_od:'axis_od',
+#
+#             sph_os:'sph_os',
+#             cyl_os:'cyl_os',
+#             axis_os:'axis_os',
+#
+#             sph_near_or:'sph_near_or',
+#             cyl_near_or:'cyl_near_or',
+#             axis_near_or:'axis_near_or',
+#
+#             sph_near_os:'sph_near_os',
+#             cyl_near_os:'cyl_near_os',
+#             axis_near_os:' axis_near_os',
+              }
+
+
+    # substitute characters coding rt5100 by model fields name
+    # only for va datas
+    for key in raw.keys():  # j'itere sur chaque key de raw datas. J'obtiens une liste de liste
+        # res[key] = list_int
+        list_int = []
+        print 'res:{}'.format(res)
+        print '=' * 10
+        print 'key:{}'.format(key)
+        print 'raw[{}]:{}'.format(key, raw[key])
+        for item in raw[key]:  # J'itere sur chaque item de la liste. item contient les datas.
+            # print 'item:{}'.format(item)
+            for k, v in mapregex.iteritems():
+                item[0] = re.sub(k, v, item[0])  # je substitue le codage du RT5100 par les fields name
+            # print 'item after sub:{}'.format(item)
+            list_int.append(item)
+            # print 'list_int : {}'.format(list_int)
+            # print'-' * 5
+            # for item in list_int:
+            #    print item
+            # print '-' * 5
+        print '-' * 10
+        print 'liste intermédiaire:{}'.format(list_int)
+        print 'res:{}'.format(res)
+        res[key] = list_int
+        print 'res updated with list intermediaire:{}'.format(res)
+        print '=' * 10
+    print 'res final en sotie de boucle:{}'.format(res)
+    print 'keys:{}'.format(res.keys())
+    for v in res.itervalues():
+        print 'value:{}'.format(v)
+#     print "res:{}".format(res)
+#     print res.values()
+#     for k in res.keys():
+#         print 'key of res:{}'.format(k)
+#     for k, v in res.iteritems():
+#         print k
+#         print v
+#         #
+
+
+                # print v
+
+        # replaced = [va_or.sub('va_or', w) for w in final[key][0]]
+        # print 'replaced:{}'.format(replaced)
+#         for v in final[key]:
+#             print v
+
+
+    logging.info('final :%s', raw)
     return res
+
 
 def map2odoofields(values):
     """Map datas to ODOO field names
@@ -309,7 +478,7 @@ def map2odoofields(values):
     values eg: [['AL', '+6.50'], ['AR', '+1.50'], ['FL', '-2.00', '0.00', '0'], ['FR', '-2.00', '0.00', '9'], ['fL', '-3.00', '0.00', '0'], ['fR', '-3.00', '0.00', '0'],]
     values is returned by getandformat_values function
     """
-    print 'in maptofieldsV2'
+    print 'in map2fields'
     res = {}
     for item in values:  # 1ere pass on populate le dictionnary avec les clefs primaires : A, a , F, f....and empty dict
 #         print 'res {}'.format(res)
@@ -345,11 +514,16 @@ def map2odoofields(values):
 
 
 if __name__ == '__main__':
-    
-    logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S /', level=logging.INFO)
 
-    datas = getandformat_values()
-    print 'getandformat_values return :{}'.format(datas)
+    logging.basicConfig(format = '%(asctime)s %(message)s', datefmt = '%m/%d/%Y %I:%M:%S /', level = logging.INFO)
+
+#     datas = getandformat_values()
+#     print 'getandformat_values return :{}'.format(datas)
+
+    datas = {'UCVA': [['MB', '1.25'], ['WB', '1.25'], ['ML', '0.63'], ['WL', '0.63'], ['MR', '0.1'], ['WR', '0.1']], 'AR': [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.8'], ['VL', '0.8'], ['UR', '0.4'], ['VR', '0.4'], ['OL', '-0.5', '-6.75', '25'], ['OR', '+6.0', '-6.25', '175']], 'Rx': [['UB', '0.32'], ['VB', '0.32'], ['UL', '0.32'], ['VL', '0.32'], ['UR', '0.25'], ['VR', '0.25'], ['AL', '+4.50'], ['AR', '+3.75'], ['FL', '+16.0', '-4.75', '130'], ['FR', '+11.75', '-3.5', '175']], 'BCVA': [['uB', '1.6'], ['vB', '1.6'], ['uL', '2.0'], ['vL', '2.0'], ['uR', '0.32'], ['vR', '0.32'], ['aL', '+3.50'], ['aR', '+3.50'], ['fL', '-1.25', '-5.25', '130'], ['fR', '+5.25', '-8.75', '175']], 'CVA': [['UB', '<0.04'], ['VB', '<0.04'], ['UL', '0.4'], ['VL', '0.4'], ['UR', '0.8'], ['VR', '0.8'], ['AL', '+1.50'], ['AR', '+1.50'], ['L', '+2.0', '-4.0', '25'], ['R', '+2.25', '-2.75', '120']]}
+
+    map2odoofieldsV2(datas)
+
 
 #     res = mergeandsubstitute(map2odoofields(datas))
 #     print "map2odoofields(datasV2, ) : {}".format(res)
