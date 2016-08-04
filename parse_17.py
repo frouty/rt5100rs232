@@ -192,7 +192,7 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
             logging.info('brut line:%s', line)
             if line.find('@RT')!=-1: # la ligne est un @RT. 
                 logging.info('find an @RT')
-                final['@RT']=res
+                #final['@RT']=res
                 logging.info('final:%s',final)
                 logging.info('final.values():%s', final.values())
                 for item in final.values():
@@ -212,6 +212,8 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
                 else:
                     va_type = 'BCVA'
                     logging.info('va_type:%s', va_type)
+                    final[va_type] = res
+                    mystring=[]
                 #on test si le premier caractere est upper
                 # si c'est le cas si c'est donc upper 
                 # alors on sait que l'on a .un va_type = 'Rx'
