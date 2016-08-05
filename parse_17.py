@@ -193,20 +193,20 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
     res = []
     final = {}
     first = []
-    for line in reversed(open(log_path).readlines()):# read each line starting by the end
+    for line in reversed(open(log_path).readlines()):  # read each line starting by the end
         if line.find('NIDEK') == -1:  # Tant que je ne trouve pas le motif 'NIDEK' je traite la ligne.
             logging.info('brut line:%s', line)
             if line.find('@RT') != -1:  # la ligne est un @RT.
                 logging.info('find an @RT')
-                #final['@RT']=res
-                logging.info('final:%s',final)
+                # final['@RT']=res
+                logging.info('final:%s', final)
                 logging.info('final.values():%s', final.values())
                 for item in final.values():
                     for i in item:
                         logging.info('values:%s', i)
-                        logging.info('%s',i[0][0])
-                        first.append(i[0][0]) # i[0][0] is the first character of the first list of the intrecated
-                    mystring="".join(first)
+                        logging.info('%s', i[0][0])
+                        first.append(i[0][0])  # i[0][0] is the first character of the first list of the intrecated
+                    mystring = "".join(first)
 # =======
 #                 for item in res:
 #                     logging.info('item:%s', item)
@@ -236,7 +236,7 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
 # <<<<<<< HEAD
 #                     mystring=[]
 #                 #on test si le premier caractere est upper
-#                 # si c'est le cas si c'est donc upper 
+#                 # si c'est le cas si c'est donc upper
 # =======
 #                     logging.info('final:%s', final)
 #                     first = []
@@ -291,6 +291,28 @@ def getandformat_values(rxlist = [regexSCA, regexADD, regexVA], log_path = os.pa
         print k, v
     return final
 
+def makeSCAdict(val):
+    """make a SCA dict
+    
+    @arg: val is a list of values 
+    eg: ['sca_os', '+16.0', '-4.75', '130']
+    
+    @return: list 
+    eg: [['sph_os','+16.0'],['cyl_os','-4.75'],['axis_os', '130']]
+    """
+    sca_or = ['sph_od', 'cyl_od', 'axis_od']
+    sca_os = ['sph_os', 'cyl_os', 'axis_os']
+    res = []
+    print 'val is:{}'.format(val)
+    if val[0] == 'sca_or':
+        res = zip(sca_or, val[1:])
+    if val[0] == 'sca_os':
+        res = zip(sca_os, val[1:])
+    else:
+        print 'return:{}'.format(val)
+        return val
+    print 'makeSCAdict return res;{}'.format(res)
+    return res
 
 def mergeADD2SCA(res):
     """Merge the ADD dict into the SCA dict
