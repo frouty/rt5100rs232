@@ -10,7 +10,7 @@ parity = serial.PARITY_EVEN
 bitlenght = serial.SEVENBITS
 stopbits = serial.STOPBITS_TWO
 
-outputfile = '/home/lfs/rt5100rs232/tmp.log'
+outputfile = '/home/listener/rt5100rs232/tmp.log'
 
 ser = serial.Serial(port,
                             baudrate = baud,
