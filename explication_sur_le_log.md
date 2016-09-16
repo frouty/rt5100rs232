@@ -119,3 +119,32 @@ a pour l'ADD
 2016-05-02T05:44:22.376036	WD35
 2016-05-02T05:44:22.408034	wd 35
 2016-05-02T05:44:22.417030	
+
+
+Probleme avec les near vision SCA
+===
+Les données de near vision SCA : nrNr et nlNl sont décrites dans le manuel
+Mais je n'ai jamais réussi à les obtenir. Le RT5100 Nidek ne les crache pas.
+C'est bien dommage car cela aurait été pratique.
+J'ai essayé parametre - SPH loin --> Pres : SPH + ADD ne marche pas.
+
+Donc on va les calculer.  
+On calcule uniquement : sph_near_vision  
+qui n'est utile que pour l'impression de la formule en vision de pres.
+on va l'afficher dans une vue form, uniquement pour des besoins de deboggage. 
+
+recupérations des données du RT5100 
+on récupere une ligne refraction prescription  
+qui est une copie de la ligne MACV
+on peut modifier on the fly cette ligne "refraction prescription" pour faire un ajustement final
+il va falloir alors que le champ sph_near_vison soit modifié si on change la sphere ou l'add.
+les datas de cette ligne "refraction prescription" sont utilisées pour l'impression de la formule : de loin, progressive de pres. 
+
+ 
+
+On peut les calculer au moment ou l'on parse les données crachées par le RT5100 Nidek.
+J'ai l'impression que ce n'est pas le plus pratiquement car là les données ne sont pas facilement extractibles ceux sont des listes de tuples. 
+Finalement je le fait lors de la création du finalDict dans la méthode get_5100 de oph_agenda.py.
+Mais la modification dans la form view de la sph ou de l'ADD ne modifie pas le champ sph_near. 
+Il va falloir faire une méthode.
+ 
