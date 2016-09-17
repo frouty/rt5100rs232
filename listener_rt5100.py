@@ -3,6 +3,9 @@
 
 import serial, io
 from datetime import datetime
+import logging
+
+logging.info( 'Starts listener' )
 
 port = "/dev/ttyUSB0"
 baud = 2400
@@ -12,27 +15,27 @@ stopbits = serial.STOPBITS_TWO
 
 outputfile = '/home/listener/rt5100rs232/tmp.log'
 
-ser = serial.Serial(port,
+ser = serial.Serial( port,
                             baudrate = baud,
                             bytesize = bitlenght,
                             parity = parity,
                             stopbits = stopbits,
-                            timeout = 1)
+                            timeout = 1 )
 
 
-sio = io.TextIOWrapper(
-                     io.BufferedRWPair(ser, ser, 1),
+sio = io.TextIOWrapper( 
+                     io.BufferedRWPair( ser, ser, 1 ),
                      encoding = 'ascii',
                      newline = '\r'
                      )
 
-with open(outputfile, 'a') as f:  # appends to existing file
+with open( outputfile, 'a' ) as f:  # appends to existing file
     while ser.isOpen():
         datastring = sio.readline()
         if datastring :
-            print 'datastring is True: {}'.format(datastring)
+            print 'datastring is True: {}'.format( datastring )
         # \t is tab; \n is new line
-            f.write(datetime.utcnow().isoformat() + '\t' + datastring + '\n')
+            f.write( datetime.utcnow().isoformat() + '\t' + datastring + '\n' )
             f.flush()  # force the system to write to disk
 
 ser.close()
