@@ -8,5 +8,3 @@ ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py > /home/
 
 [Install]
 WantedBy=multi-user.target
-
- a mettre dans /var/lib/systemd/system/hello_world.service
