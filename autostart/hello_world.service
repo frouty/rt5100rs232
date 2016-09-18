@@ -1,5 +1,5 @@
 [Unit]
-Description=My Script Service
+Description=Litener to RT5100 NIDEK
 After=multi-user.target
 
 [Service]
