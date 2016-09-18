@@ -1,0 +1,12 @@
+[Unit]
+Description=Litener to RT5100 NIDEK
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py > /home/pi/myscript.log 2>&1
+
+[Install]
+WantedBy=multi-user.target
+
+ a mettre dans /var/lib/systemd/system/hello_world.service
