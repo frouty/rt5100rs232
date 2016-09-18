@@ -1,8 +1,5 @@
 #ce fichier devra etre déplacé dans 
-#/lib/bin/systemd/
-# et il faudra creer un lien entre 
-# /lib/systemd/cefichier.service et /etc/systemd/system/cefichier.service
-# ln -s /lib/systemd/cefichier.service /etc/systemd/system/cefichier.service
+#/lib/systemd/system
 
 
 [Unit]
@@ -23,7 +20,7 @@ Restart=on-abort
 
 [Install]
 WantedBy=multi-user.target
-sudo chmod 644 /lib/systemd/system/myscript.service
+#sudo chmod 644 /lib/systemd/system/myscript.service
 To try 
 systemctl daemon-reload
 systemctl start listener.service
