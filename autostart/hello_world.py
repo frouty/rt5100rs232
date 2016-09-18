@@ -6,6 +6,6 @@ logging.warning( 'Starts Hello World' )
 try:
     while True:
         print "Hello World"
-        sleep( 60 )
+        sleep( 5 )
 except KeyboardInterrupt, e:
     logging.warning( "Stopping..." )
