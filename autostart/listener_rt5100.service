@@ -1,0 +1,24 @@
+[Unit]
+Description=RT5100 RS232 listener
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/rt5110rs232/init_listener_rt5100.sh
+#On peut aussi mettre directement le script python
+#ExecStart= python /la/ou/est/mon/script/monscript.py
+/usr/bin/python /la/ou/est/mon/script/monscript.py
+WorkingDirectory=/path/to/script
+ExecStart=/usr/bin/python script.py
+Restart=always
+#rendre ce script executable
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+#sudo chmod 644 /lib/systemd/system/myscript.service
+To try 
+systemctl daemon-reload
+systemctl start listener.service
+if it works 
+systemctl enable listener.service
