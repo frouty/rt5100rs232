@@ -13,7 +13,7 @@ parity = serial.PARITY_EVEN
 bitlenght = serial.SEVENBITS
 stopbits = serial.STOPBITS_TWO
 
-outputfile = '/home/pi/rt5100rs232/tmp.log'
+outputfile = '/home/pi/tmp.log'
 
 ser = serial.Serial(port,
                             baudrate = baud,
