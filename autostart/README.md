@@ -2,6 +2,8 @@ autostart a python script for Raspberry on bootup
 ====
 http://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/
 
+https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
+
 systemd is a software suite for central management and configuration of a Linux system and aims to replace other popular tools that previously fulfilled this role.  
 
 1 Write a python script
