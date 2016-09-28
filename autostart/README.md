@@ -13,16 +13,16 @@ systemd is a software suite for central management and configuration of a Linux 
 ===
 with : sudo nano /lib/systemd/system/hello_world.service
 
-[Unit]
-Description=Litener to RT5100 NIDEK
-After=multi-user.target
+[Unit]  
+Description=Litener to RT5100 NIDEK  
+After=multi-user.target  
 
-[Service]
-Type=idle
-ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py 
-or 
-ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py > /home/pi/myscript.log 2>&1
-[Install]
+[Service]  
+Type=idle  
+ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py  
+or  
+ExecStart=/usr/bin/python /home/pi/rt5100rs232/autostart/hello_world.py > /home/pi/myscript.log 2>&1  
+[Install]  
 WantedBy=multi-user.target  
 
 3 Change permissions 
@@ -32,11 +32,11 @@ sudo chmod 644 /lib/systemd/system/hello_world.service
 4 Configure systemd
 ====
 sudo systemctl daemon-reload
-sudo systemctl enable hello_world.service
 
-5 Reboot
+5 Test if it works
 ===
-sudo reboot
+sudo systemctl start hello_world (.service facultatif)
+
 
 6 Look in 
 ===
@@ -45,6 +45,16 @@ tail -f /var/log/system.log
 ou 
 
 sudo systemctl status hello_world.service
+
+
+7 Si ca marche
+===
+sudo systemctl enable hello_world
+
+8 Reboot
+===
+sudo reboot
+
 
 Change time zone for Raspberry
 ====
