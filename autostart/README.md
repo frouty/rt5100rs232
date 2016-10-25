@@ -37,6 +37,7 @@ sudo systemctl daemon-reload
 ===
 sudo systemctl start hello_world (.service facultatif)
 
+before that be sure that the usb-rs232 cable is plugged in the raspberry.  
 
 6 Look in 
 ===
