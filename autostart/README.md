@@ -46,10 +46,14 @@ You should see something like that:
 Sep 28 15:24:17 raspberrypi systemd[1]: Starting RT5100 RS232 listener...  
 Sep 28 15:24:17 raspberrypi systemd[1]: Started RT5100 RS232 listener.  
 
+ou  
+
+cat /var/log/syslog | grep listener  
+
 ou 
 
-sudo systemctl status hello_world.service..
-which give  
+sudo systemctl status hello_world.service  
+which give    
 ● listener_rt5100.service - RT5100 RS232 listener  
    Loaded: loaded (/lib/systemd/system/listener_rt5100.service; disabled)  
    Active: active (running) since Wed 2016-09-28 15:24:17 NCT; 1min 24s ago  
