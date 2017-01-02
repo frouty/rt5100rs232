@@ -111,7 +111,7 @@ Qu'est ce qu'il faut faire au niveau du script?
 
 Axe
 ---
-Si l'axe est 0° qu'est ce qui est renvoyé?
+Si l'axe est 0° qu'est ce qui est renvoyé? est renvoyé 0
 Si je ne mets rien dans la console RT5100 est ce que cela veut dire que l'axe est à zéro?
  
  Est ce qu'on peut avoir une valeur d'axe et rien pour le cylindre?
