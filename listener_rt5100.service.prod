@@ -1,0 +1,14 @@
+[Unit]
+Description=RT5100 RS232 listener
+#After=syslog.target network.target
+After=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/rt5100rs232/
+ExecStart=/usr/bin/python listener_rt5100.py
+Restart=always
+#Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
