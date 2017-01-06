@@ -1,6 +1,10 @@
 #ce fichier devra etre déplacé dans 
 #/lib/systemd/system
 # du raspberry.
+# cd /lib/systemd/system
+# ls -al | grep listener
+# - rw-r--r--  1 root root   279 Sep 18 17:44 listener_rt5100.service
+
 
 
 [Unit]
