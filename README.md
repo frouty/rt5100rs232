@@ -60,16 +60,21 @@ chr(81) --> Q
 ---------
 différence entre byte et charactere
 =====
-un byte peut prendre jusqu'à 256 valeur différentes. 
-
-Et ces systeme ne peuvent gérer plus de 256 characteres.
+un byte peut prendre jusqu'à 256 valeur différentes. Et ces systeme ne peuvent gérer plus de 256 characteres.
 
 Avec unicode il y a bcp de characteres mais il faut gérer plus de un byte.
+
 Dans python les chaines standards sont des chaines 8 bits and des chaines simples.
-Dans python on n'a pas besoin de savoir comment sont représentés les characteres unicodes sauf quand on veut les envoyer à des fonctions byte orientées comment des fonctions d'ecriture sur des fichiers, d'utilisation de socket. À ce moment là il faut choisir comment représenter un charactere en byte. Convertir depuis unicode vers une byte string s'appelle encoding la chaine de characteres. De la meme façon si on doit charger des chaines unicodes depuis un fichier, un socket ou tout objet byte-oriented, il faut décoder la chaine de bytes vers unicode.
+
+Dans python on n'a pas besoin de savoir comment sont représentés les characteres unicodes sauf quand on veut les envoyer à des fonctions byte orientées comment des fonctions d'ecriture sur des fichiers, d'utilisation de socket. 
+
+À ce moment là il faut choisir comment représenter un charactere en byte. Convertir depuis unicode vers une byte string s'appelle encoding la chaine de characteres. De la meme façon si on doit charger des chaines unicodes depuis un fichier, un socket ou tout objet byte-oriented, il faut décoder la chaine de bytes vers unicode.
+
 Il faut toujours faire la conversion bytestring to unicode aux barriers IO.
+
 Donc quand on recoit les données de l'exterieurs (network, file, user input) il faut construire un objet unicode immédiatement. Il faut trouver l'encodage approprié.
-Quand le programme envoie des données "à l'extérieur" (vers le net, vers des fichiers, vers l'utilisateur, etc.), il faut déterminer l'encodage et et convertir le text vers une bytestring avec cet encodage.Sinon Python essaie de convertire unicode vers une bytestring ASCII ce qui a toutes les chances de produire une UnicodeDecodeErrors.
+
+Quand le programme envoie des données "à l'extérieur" (vers le net, vers des fichiers, vers l'utilisateur, etc.), il faut déterminer l'encodage et et convertir le text vers une bytestring avec cet encodage. Sinon Python essaie de convertire unicode vers une bytestring ASCII ce qui a toutes les chances de produire une UnicodeDecodeErrors.
 
 UnicodeDecodeErrors et UnicodeEncodeError
 ----
