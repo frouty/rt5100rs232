@@ -61,7 +61,9 @@ chr(81) --> Q
 différence entre byte et charactere
 =====
 un byte peut prendre jusqu'à 256 valeur différentes. 
+
 Et ces systeme ne peuvent gérer plus de 256 characteres.
+
 Avec unicode il y a bcp de characteres mais il faut gérer plus de un byte.
 Dans python les chaines standards sont des chaines 8 bits and des chaines simples.
 Dans python on n'a pas besoin de savoir comment sont représentés les characteres unicodes sauf quand on veut les envoyer à des fonctions byte orientées comment des fonctions d'ecriture sur des fichiers, d'utilisation de socket. À ce moment là il faut choisir comment représenter un charactere en byte. Convertir depuis unicode vers une byte string s'appelle encoding la chaine de characteres. De la meme façon si on doit charger des chaines unicodes depuis un fichier, un socket ou tout objet byte-oriented, il faut décoder la chaine de bytes vers unicode.
